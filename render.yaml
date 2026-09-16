@@ -1,0 +1,46 @@
+﻿# =============================================================
+# render.yaml — Gettik FastAPI Backend Deployment Configuration
+# Deploy karne k liye: https://dashboard.render.com
+# =============================================================
+
+services:
+  - type: web
+    name: gettik-backend
+    runtime: python
+    region: singapore
+
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+
+    startCommand: gunicorn -c gunicorn.conf.py src.main:app
+
+    healthCheckPath: /health
+
+    plan: free
+
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: false
+      - key: APP_HOST
+        value: "0.0.0.0"
+      - key: APP_PORT
+        value: "8000"
+      - key: API_BASE_URL
+        value: "https://gettik-backend.onrender.com"
+      - key: ADMIN_BASE_URL
+        value: "https://gettik-backend.onrender.com/admin"
+      - key: CORS_ORIGINS
+        value: "https://gettik-backend.onrender.com,https://yourdomain.com,http://localhost:8000"
+      - key: DATABASE_URL
+        value: "sqlite:///data/gettik.db"
+      - key: GETTIK_DOWNLOAD_WORKERS
+        value: "3"
+      - key: DOWNLOAD_STORAGE_PATH
+        value: "./data/downloads"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SESSION_SECRET
+        generateValue: true
